@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Nagare extends Activity implements OnClickListener 
 {
@@ -86,7 +87,7 @@ public class Nagare extends Activity implements OnClickListener
         m_url_editor = (EditText) findViewById(R.id.url_editor);
         m_alert = (TextView) findViewById(R.id.alert);
         m_output = (TextView) findViewById(R.id.output);
-        m_url_editor.setText("http://kqedsc01.streamguys.us/");
+        m_url_editor.setText("http://rodja.dengar.co.cc/");
         m_play_button = (ImageButton) findViewById(R.id.play);        
         m_play_button.setOnClickListener(this);
         m_play_button.setImageResource(android.R.drawable.ic_media_play);
@@ -116,6 +117,19 @@ public class Nagare extends Activity implements OnClickListener
          }
     }
     
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		try {
+			if (m_nagare_service != null && m_nagare_service.state() != NagareService.STOPPED) {
+				m_nagare_service.stop();
+			}
+		} catch (RemoteException e) {
+			Toast.makeText(null, "Unable to stop NagareService: " + e, Toast.LENGTH_SHORT);
+		}
+		unbindService(m_nagare_service_connection);
+	}
+
     public void refresh()
     {
     	if (m_nagare_service == null)
